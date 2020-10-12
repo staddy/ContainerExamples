@@ -25,7 +25,7 @@ public:
     LinkedList(LinkedList&& other_);
     ~LinkedList() { clear(); };
     LinkedList& operator=(const LinkedList& other_);
-    LinkedList& operator=(LinkedList&& other_);;
+    LinkedList& operator=(LinkedList&& other_);
     void pushBack(const Element& element_);
     void pushFront(const Element& element_);
     void popBack();
@@ -54,8 +54,8 @@ public:
         Iterator(ElementWrapper* element_);
         ElementWrapper* element{nullptr};
         bool operator!=(const Iterator& other_);
-        void operator++(int);
-        Iterator operator++();
+        Iterator operator++(int);
+        Iterator& operator++();
         Element& operator*();
     };
     Iterator begin();

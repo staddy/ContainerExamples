@@ -172,10 +172,12 @@ bool LinkedList::operator==(const LinkedList &other_) {
     if (m_size != other_.m_size) {
         return false;
     }
-    for (size_t i = 0; i < m_size; ++i) {
-        if ((*this)[i].n() != other_[i].n()) {
+    auto it2 = other_.begin();
+    for (const auto& e1 : (*this)) {
+        if (e1.n() != (*it2).n()) {
             return false;
         }
+        ++it2;
     }
     return true;
 }
@@ -234,7 +236,7 @@ bool LinkedList::Iterator::operator!=(const LinkedList::Iterator &other_) {
     return element != other_.element;
 }
 
-LinkedList::Iterator LinkedList::Iterator::operator++() {
+LinkedList::Iterator& LinkedList::Iterator::operator++() {
     (*this)++;
     return *this;
 }
@@ -243,6 +245,8 @@ Element &LinkedList::Iterator::operator*() {
     return element->element;
 }
 
-void LinkedList::Iterator::operator++(int) {
+LinkedList::Iterator LinkedList::Iterator::operator++(int) {
+    auto retVal = *this;
     element = element->right;
+    return retVal;
 }
