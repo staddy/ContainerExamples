@@ -34,8 +34,8 @@ public:
     const Element& operator[](size_t n_) const;
     Element& operator[](size_t n_);
     void clear();
-    bool operator==(const LinkedList& other_);
-    bool operator!=(const LinkedList& other_);
+    bool operator==(const LinkedList& other_) const;
+    bool operator!=(const LinkedList& other_) const;
     friend std::ostream& operator<<(std::ostream& stream_, LinkedList& list_);
     friend std::istream& operator>>(std::istream& stream_, LinkedList& list_);
 private:

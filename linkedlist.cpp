@@ -147,7 +147,17 @@ void LinkedList::popFront() {
 size_t LinkedList::size() const { return m_size; }
 
 Element &LinkedList::operator[](size_t n_) {
-    return const_cast<Element&>(const_cast<const LinkedList&>(*this)[n_]);
+    //return const_cast<Element&>(const_cast<const LinkedList&>(*this)[n_]);
+    if (n_ >= m_size) {
+        throw std::out_of_range("n_ >= m_size");
+    }
+    auto tmp = m_first;
+    assert(tmp != nullptr);
+    for (size_t i = 0; i < n_; ++i) {
+        assert(tmp != nullptr);
+        tmp = tmp->right;
+    }
+    return tmp->element;
 }
 
 void LinkedList::clear() {
@@ -168,7 +178,7 @@ void LinkedList::clear() {
     m_size = 0;
 }
 
-bool LinkedList::operator==(const LinkedList &other_) {
+bool LinkedList::operator==(const LinkedList &other_) const {
     if (m_size != other_.m_size) {
         return false;
     }
@@ -182,7 +192,7 @@ bool LinkedList::operator==(const LinkedList &other_) {
     return true;
 }
 
-bool LinkedList::operator!=(const LinkedList &other_) {
+bool LinkedList::operator!=(const LinkedList &other_) const {
     return !((*this) == other_);
 }
 
@@ -203,16 +213,7 @@ LinkedList::Iterator LinkedList::end() const {
 }
 
 const Element &LinkedList::operator[](size_t n_) const {
-    if (n_ >= m_size) {
-        throw std::out_of_range("n_ >= m_size");
-    }
-    auto tmp = m_first;
-    assert(tmp != nullptr);
-    for (size_t i = 0; i < n_; ++i) {
-        assert(tmp != nullptr);
-        tmp = tmp->right;
-    }
-    return tmp->element;
+    return const_cast<LinkedList&>(*this)[n_];
 }
 
 LinkedList &LinkedList::operator=(const LinkedList &other_) {
