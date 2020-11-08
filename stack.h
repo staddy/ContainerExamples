@@ -8,10 +8,10 @@
 template<typename T> class Stack {
 public:
     Stack() = default;
-    Stack(const Stack& other_) = delete;
+    Stack(const Stack& other_);
     Stack(Stack&& other_) = default;
     ~Stack() = default;
-    Stack& operator=(const Stack& other_) = delete;
+    Stack& operator=(const Stack& other_);
     Stack& operator=(Stack&& other_) = default;
     T& top();
     void pop();
@@ -23,6 +23,7 @@ public:
     friend std::ostream& operator<<(std::ostream&, const Stack<T>&);
     friend std::istream& operator>>(std::istream&, Stack<T>&);
 private:
+    void copy(const Stack& other_);
     class StackElement {
     public:
         StackElement() = delete;
@@ -39,6 +40,35 @@ private:
     std::unique_ptr<StackElement> m_top{nullptr};
     size_t m_size{0};
 };
+
+template<typename T> void Stack<T>::copy(const Stack& other_) {
+    if (other_.m_top == nullptr) {
+        return;
+    }
+    Stack<T> temp;
+    auto t = other_.m_top.get();
+    do {
+        temp.push(t->value());
+        t = t->next().get();
+    } while (t != nullptr);
+    t = temp.m_top.get();
+    do {
+        push(t->value());
+        t = t->next().get();
+    } while (t != nullptr);
+}
+
+template<typename T> Stack<T>::Stack(const Stack& other_) {
+    copy(other_);
+}
+
+template<typename T> Stack<T>& Stack<T>::operator=(const Stack& other_) {
+    if (&other_ != this) {
+        clear();
+        copy(other_);
+    }
+    return *this;
+}
 
 template<typename T> T& Stack<T>::top() {
     if (m_top == nullptr) {
@@ -85,7 +115,7 @@ std::ostream& operator<<(std::ostream& stream_, const Stack<int>& stack_) {
     auto s = stack_.size();
     stream_.write(reinterpret_cast<char*>(&s), sizeof(s));
     stream_ << p->value();
-    while (p = p->next().get()) {
+    while ((p = p->next().get())) {
         stream_ << p->value();
     }
     return stream_;
